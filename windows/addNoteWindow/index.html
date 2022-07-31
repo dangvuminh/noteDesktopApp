@@ -6,11 +6,17 @@
 <body>
     <form>
         <label>Notation</label>
-        <input type="text">
+        <input type="text" id="item">
+        <button type="submit">Submit</button>
     </form>
     <script>
-        const electron = require('electron');
-        const { ipcRenderer } = electron;
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const ipcRenderer = window.api;
+            const item = document.querySelector('#item').value;
+            ipcRenderer.sendData('item:add', item);
+        })
 
     </script>
 </body>

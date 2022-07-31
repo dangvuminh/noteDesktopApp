@@ -5,5 +5,15 @@
 </head>
 <body>
     <h1>Note App</h1>
+    <p id="item-li"></p>
+
+    <script>
+        const ipcRenderer = window.api;
+        console.log( window.api);
+        ipcRenderer.listen('item:add', (e, item) => {
+            const li = document.querySelector('#item-li');
+            li.innerHTML = item;
+        })
+    </script>
 </body>
 </html>

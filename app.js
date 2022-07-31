@@ -2,7 +2,7 @@ const electron = require('electron');
 const url = require('url');
 const path = require('path'); 
 
-const { app, BrowserWindow, Menu } = electron;
+const { app, BrowserWindow, Menu, ipcMain } = electron;
 
 let mainWindow;
 let addWindow;
@@ -10,7 +10,12 @@ let addWindow;
 //Listen on app to be ready
 app.on('ready', () => {
     //create a new window
-    mainWindow = new BrowserWindow({});
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js'),
+        },
+    });
 
     //Load html into window
     mainWindow.loadURL(url.format({
@@ -32,6 +37,10 @@ app.on('ready', () => {
 //handle add window
 const createAddWindow = () => {
     addWindow = new BrowserWindow({
+        webPreferences: {
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js'),
+        },
         width: 300,
         height: 200,
         title: 'Add Note',
@@ -49,6 +58,13 @@ const createAddWindow = () => {
         addWindow = null;
     })
 }
+
+//catch item
+ipcMain.on('item:add', (e, item) => {
+    console.log(item);
+    mainWindow.webContents.send('item:add', item);
+    addWindow.close();
+})
 
 //create main menu
 const mainMenuTemplate = [
